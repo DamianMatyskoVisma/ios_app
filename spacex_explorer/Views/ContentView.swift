@@ -21,16 +21,26 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             List(launches) { launch in
-                Button {
-                    selectedLaunch = launch
-                } label: {
-                    VStack(alignment: .leading) {
-                        Text(launch.name)
-                            .font(.headline)
-                        Text(viewModel.formattedDate(launch.dateUTC))
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
+                HStack {
+                    Button {
+                        selectedLaunch = launch
+                    } label: {
+                        VStack(alignment: .leading) {
+                            Text(launch.name)
+                                .font(.headline)
+                            Text(viewModel.formattedDate(launch.dateUTC))
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
                     }
+                    Spacer()
+                    Button(action: {
+                        viewModel.toggleFavorite(for: launch)
+                    }) {
+                        Image(systemName: viewModel.isFavorite(for: launch) ? "star.fill" : "star")
+                            .foregroundColor(.yellow)
+                    }
+                    .buttonStyle(.plain)
                 }
             }
             .navigationTitle("SpaceX Launches")

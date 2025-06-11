@@ -4,6 +4,7 @@ import SwiftData
 @MainActor
 class LaunchesViewModel: ObservableObject {
     private let modelContext: ModelContext
+    private let favoritesKey = "favoriteLaunchIDs"
     
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
@@ -32,6 +33,8 @@ class LaunchesViewModel: ObservableObject {
                     modelContext.insert(entity)
                 }
             }
+            let allEntities = try modelContext.fetch(FetchDescriptor<LaunchEntity>())
+            updateAllFavorites(allEntities)
         } catch {
             print("Failed to fetch or save launches: \(error)")
         }
@@ -47,5 +50,35 @@ class LaunchesViewModel: ObservableObject {
             return displayFormatter.string(from: date)
         }
         return iso
+    }
+    
+    func toggleFavorite(for launch: LaunchEntity) {
+        var favorites = favoriteIDs()
+        if let idx = favorites.firstIndex(of: launch.id) {
+            favorites.remove(at: idx)
+        } else {
+            favorites.append(launch.id)
+        }
+        UserDefaults.standard.set(favorites, forKey: favoritesKey)
+        updateFavorites(for: launch)
+    }
+    
+    func isFavorite(for launch: LaunchEntity) -> Bool {
+        favoriteIDs().contains(launch.id)
+    }
+    
+    private func favoriteIDs() -> [String] {
+        UserDefaults.standard.stringArray(forKey: favoritesKey) ?? []
+    }
+    
+    func updateFavorites(for launch: LaunchEntity) {
+        launch.isFavorite = isFavorite(for: launch)
+        objectWillChange.send()
+    }
+    
+    func updateAllFavorites(_ launches: [LaunchEntity]) {
+        for launch in launches {
+            updateFavorites(for: launch)
+        }
     }
 } 

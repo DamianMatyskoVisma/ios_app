@@ -13,6 +13,7 @@ final class LaunchEntity {
     var webcast: String?
     var article: String?
     var presskit: String?
+    @Transient var isFavorite: Bool = false
     
     init(id: String, name: String, dateUTC: String, success: Bool?, rocketId: String, details: String?, patchImage: String?, webcast: String?, article: String?, presskit: String?) {
         self.id = id
