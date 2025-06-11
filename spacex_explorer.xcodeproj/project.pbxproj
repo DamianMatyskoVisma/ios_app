@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		3D7BD1742DF9AC4400691B05 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 3D7BD1732DF9AC4400691B05 /* Kingfisher */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		3D8657192DF9761B007750C5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3D7BD1742DF9AC4400691B05 /* Kingfisher in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +117,7 @@
 			);
 			name = spacex_explorer;
 			packageProductDependencies = (
+				3D7BD1732DF9AC4400691B05 /* Kingfisher */,
 			);
 			productName = spacex_explorer;
 			productReference = 3D8657082DF9761B007750C5 /* spacex_explorer.app */;
@@ -195,6 +201,9 @@
 			);
 			mainGroup = 3D8656FF2DF9761B007750C5;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				3D5FDDEA2DF9A9AC00153013 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3D8657092DF9761B007750C5 /* Products */;
 			projectDirPath = "";
@@ -593,6 +602,24 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3D5FDDEA2DF9A9AC00153013 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.3.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3D7BD1732DF9AC4400691B05 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Kingfisher;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3D8657002DF9761B007750C5 /* Project object */;
 }
