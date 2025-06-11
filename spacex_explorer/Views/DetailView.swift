@@ -3,13 +3,12 @@ import SwiftUI
 struct DetailView: View {
     let launch: LaunchEntity
     @StateObject var viewModel: LaunchesViewModel
+    @State private var rocketEntity: RocketEntity? = nil
+    @State private var showRocketDetail = false
     
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                Text(launch.name)
-                    .font(.title)
-                    .bold()
                 Text("Date: \(viewModel.formattedDate(launch.dateUTC))")
                 if let success = launch.success {
                     Text("Status: \(success ? "Success" : "Failure")")
@@ -28,10 +27,32 @@ struct DetailView: View {
                 if let presskit = launch.presskit, let url = URL(string: presskit) {
                     Link("Press Kit", destination: url)
                 }
+                Button(action: {
+                    Task {
+                        if let entity = await viewModel.fetchRocketDetail(rocketId: launch.rocketId) {
+                            rocketEntity = entity
+                            showRocketDetail = true
+                        }
+                    }
+                }) {
+                    HStack {
+                        Text("🚀 Rocket Details >")
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                    }
+                    .font(.headline)
+                }
+                .buttonStyle(.borderedProminent)
+                .padding(.top, 8)
             }
             .padding()
         }
         .navigationTitle(launch.name)
+        .sheet(isPresented: $showRocketDetail) {
+            if let rocketEntity = rocketEntity {
+                RocketDetailView(rocket: rocketEntity)
+            }
+        }
     }
     
 

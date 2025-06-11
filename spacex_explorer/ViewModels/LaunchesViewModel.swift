@@ -6,6 +6,8 @@ class LaunchesViewModel: ObservableObject {
     private let modelContext: ModelContext
     private let favoritesKey = "favoriteLaunchIDs"
     
+    @Published var apiError: String? = nil
+    
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
         Task {
@@ -35,8 +37,10 @@ class LaunchesViewModel: ObservableObject {
             }
             let allEntities = try modelContext.fetch(FetchDescriptor<LaunchEntity>())
             updateAllFavorites(allEntities)
+            apiError = nil
         } catch {
             print("Failed to fetch or save launches: \(error)")
+            apiError = error.localizedDescription
         }
     }
     
@@ -80,5 +84,38 @@ class LaunchesViewModel: ObservableObject {
         for launch in launches {
             updateFavorites(for: launch)
         }
+    }
+    
+    func fetchRocketDetail(rocketId: String) async -> RocketEntity? {
+        do {
+            if let existing = try? modelContext.fetch(FetchDescriptor<RocketEntity>(predicate: #Predicate { $0.id == rocketId })).first {
+                return existing
+            }
+            let rocket = try await SpaceXAPIService.fetchRocketDetail(id: rocketId)
+            let entity = RocketEntity(
+                id: rocket.id,
+                name: rocket.name,
+                height: rocket.height.meters,
+                diameter: rocket.diameter.meters,
+                mass: rocket.mass.kg,
+                firstFlight: rocket.firstFlight,
+                descriptionText: rocket.description,
+                successRatePct: rocket.successRatePct,
+                active: rocket.active,
+                costPerLaunch: rocket.costPerLaunch,
+                patchImage: nil
+            )
+            modelContext.insert(entity)
+            apiError = nil
+            return entity
+        } catch {
+            print("Failed to fetch rocket details: \(error)")
+            apiError = error.localizedDescription
+            return nil
+        }
+    }
+    
+    func clearApiError() {
+        apiError = nil
     }
 } 

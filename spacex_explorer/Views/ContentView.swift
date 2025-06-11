@@ -13,6 +13,7 @@ struct ContentView: View {
     @Query private var launches: [LaunchEntity]
     @StateObject private var viewModel: LaunchesViewModel
     @State private var selectedLaunch: LaunchEntity?
+    @State private var showApiError = false
     
     init(modelContext: ModelContext) {
         _viewModel = StateObject(wrappedValue: LaunchesViewModel(modelContext: modelContext))
@@ -47,6 +48,16 @@ struct ContentView: View {
             .navigationDestination(item: $selectedLaunch) { launch in
                 DetailView(launch: launch, viewModel: viewModel)
             }
+            .onChange(of: viewModel.apiError) { _, newValue in
+                showApiError = newValue != nil
+            }
+            .alert("API Error", isPresented: $showApiError, actions: {
+                Button("OK") {
+                    viewModel.clearApiError()
+                }
+            }, message: {
+                Text(viewModel.apiError ?? "Unknown error")
+            })
         }
     }
 }
