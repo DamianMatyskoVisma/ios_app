@@ -36,4 +36,16 @@ class LaunchesViewModel: ObservableObject {
             print("Failed to fetch or save launches: \(error)")
         }
     }
+    
+    func formattedDate(_ iso: String) -> String {
+        let isoFormatter = ISO8601DateFormatter()
+        isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        if let date = isoFormatter.date(from: iso) {
+            let displayFormatter = DateFormatter()
+            displayFormatter.dateStyle = .long
+            displayFormatter.timeStyle = .short
+            return displayFormatter.string(from: date)
+        }
+        return iso
+    }
 } 
